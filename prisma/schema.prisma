@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgcrypto]
+}
+
+model User {
+  id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username String    @unique
+  password String
+  posts    Post[]
+  messages Message[]
+
+  @@map("users")
+}
+
+model Post {
+  id           Int       @id @default(autoincrement())
+  created_time DateTime  @default(now()) @db.Timestamptz(3)
+  title        String
+  content      String
+  messages     Message[]
+  user_id      String    @db.Uuid
+  User         User      @relation(fields: [user_id], references: [id])
+
+  @@map("posts")
+}
+
+model Message {
+  id           Int      @id @default(autoincrement())
+  created_time DateTime @default(now()) @db.Timestamptz(3)
+  content      String
+  user_id      String   @db.Uuid
+  post_id      Int
+  Post         Post     @relation(fields: [post_id], references: [id])
+  User         User     @relation(fields: [user_id], references: [id])
+
+  @@map("messages")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+
+  @@map("sessions")
+}
