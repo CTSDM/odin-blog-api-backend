@@ -17,6 +17,7 @@ async function createUser(user) {
         data: {
             username: user.username,
             password: user.pw,
+            is_admin: user.admin,
         },
     });
 

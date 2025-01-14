@@ -1,19 +1,25 @@
 import db from "../db/queries.js";
 import bcrypt from "bcryptjs";
-// we can use passport after creating a new user to login automatically
-// but since we have separated backend and frontend i think this can be handled in the front-end!
 import passport from "passport";
+import { env } from "../../config/config.js";
 
 async function add(req, res) {
-    // check if the username is already in use
+    const newUser = {};
+    // We check if the request contains an admin code and if it is correct
+    // If it doesn't contain the admin code we try to create an user
+    // If it tries to create an admin the adminCode must be correct, otherwise we throw 401
+    let adminCode = req.body.adminCode;
+    if (adminCode && adminCode !== env.adminCode) return res.sendStatus(401);
+    newUser.admin = !!adminCode;
+
     const username = await db.getUser("username", req.body.username);
     if (username === null) {
-        const newUser = {
-            username: req.body.username,
-        };
+        newUser.username = req.body.username;
         newUser.pw = await bcrypt.hash(req.body.password, 10);
         const userDB = await db.createUser(newUser);
-        return res.json({ username: newUser.username });
+        const response = { username: newUser.username };
+        if (newUser.admin) response.admin = true;
+        return res.json(response);
     } else {
         return res.sendStatus(400);
     }
