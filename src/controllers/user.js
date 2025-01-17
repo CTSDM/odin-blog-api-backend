@@ -25,7 +25,7 @@ async function add(req, res) {
     }
 }
 
-function login(req, res) {
+function login(req, res, next) {
     passport.authenticate(
         "local",
         {
@@ -33,14 +33,14 @@ function login(req, res) {
         },
         (err, user, info) => {
             if (user) {
-                req.login(user, () =>
-                    res.status(200).json({ data: "WELCOME BACK APE" }),
-                );
+                req.login(user, () => {
+                    next();
+                });
             } else {
                 return res.status(401).json({ data: "NOT AN APE" });
             }
         },
-    )(req, res);
+    )(req, res, next);
 }
 
 function logout(req, res, next) {

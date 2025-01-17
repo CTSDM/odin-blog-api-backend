@@ -1,7 +1,16 @@
-function loggedIn(req, res, next) {
+import db from "../db/queries.js";
+function isLoggedIn(req, res, next) {
     if (req.user) {
         next();
     } else return res.status(401).json({ msg: "User not logged in" });
 }
 
-export default { loggedIn };
+function isAdmin(req, res, next) {
+    if (req.user["is_admin"]) {
+        next();
+    } else {
+        return res.sendStatus(401);
+    }
+}
+
+export default { isLoggedIn, isAdmin };
