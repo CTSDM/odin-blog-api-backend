@@ -12,6 +12,9 @@ async function getAll(_, res) {
 async function get(req, res) {
     const post = await db.getPost(+req.params.id);
     if (post) {
+        post.comments.forEach((comment) => {
+            comment.username = comment.User.username;
+        });
         post.username = post.User.username;
         delete post.User;
         return res.status(200).json(post);

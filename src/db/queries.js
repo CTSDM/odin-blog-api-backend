@@ -1,8 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient({
-    log: ["query"],
-});
+const prisma = new PrismaClient();
 
 async function getUser(param, value) {
     const user = await prisma.user.findUnique({
@@ -72,6 +70,7 @@ async function getPost(id) {
             },
             comments: {
                 select: {
+                    id: true,
                     ["created_time"]: true,
                     content: true,
                     User: {
@@ -87,6 +86,36 @@ async function getPost(id) {
     return post;
 }
 
-export default { getUser, createUser, createPost, getAllPosts, getPost };
+async function createComment(content, userId, postId) {
+    const newComment = await prisma.comment.create({
+        data: {
+            content: content,
+            ["post_id"]: postId,
+            ["user_id"]: userId,
+        },
+    });
+
+    return newComment;
+}
+
+async function deleteComment(id) {
+    const comment = await prisma.comment.delete({
+        where: {
+            id: id,
+        },
+    });
+
+    return comment;
+}
+
+export default {
+    getUser,
+    createUser,
+    createPost,
+    getAllPosts,
+    getPost,
+    createComment,
+    deleteComment,
+};
 
 // define all the query functions
