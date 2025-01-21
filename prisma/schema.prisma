@@ -27,6 +27,7 @@ model Post {
   content      String
   user_id      String    @db.Uuid
   comments     Comment[]
+  visible      Boolean   @default(true)
   User         User      @relation(fields: [user_id], references: [id])
 
   @@map("posts")

@@ -29,6 +29,7 @@ async function createPost(post, userId) {
         data: {
             title: post.title,
             content: post.content,
+            visible: post.visible,
             user_id: userId,
         },
     });
@@ -43,6 +44,7 @@ async function getAllPosts() {
             ["created_time"]: true,
             title: true,
             content: true,
+            visible: true,
             User: {
                 select: {
                     username: true,
@@ -51,6 +53,21 @@ async function getAllPosts() {
         },
     });
     return posts;
+}
+
+async function updatePost(id, post) {
+    const newPost = await prisma.post.update({
+        where: {
+            id: id,
+        },
+        data: {
+            // title: post.title,
+            // content: post.content,
+            visible: post.visible,
+        },
+    });
+
+    return newPost;
 }
 
 async function getPost(id) {
@@ -63,6 +80,7 @@ async function getPost(id) {
             ["created_time"]: true,
             title: true,
             content: true,
+            visible: true,
             User: {
                 select: {
                     username: true,
@@ -116,6 +134,7 @@ export default {
     getPost,
     createComment,
     deleteComment,
+    updatePost,
 };
 
 // define all the query functions
