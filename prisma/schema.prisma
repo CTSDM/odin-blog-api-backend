@@ -39,7 +39,7 @@ model Comment {
   content      String
   user_id      String   @db.Uuid
   post_id      Int
-  Post         Post     @relation(fields: [post_id], references: [id])
+  Post         Post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
   User         User     @relation(fields: [user_id], references: [id])
 
   @@map("comments")

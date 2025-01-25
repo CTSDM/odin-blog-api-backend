@@ -21,7 +21,7 @@ app.use(
     cors({
         exposedHeaders: ["SET-COOKIES"],
         credentials: true,
-        origin: ["http://localhost:5173", "http://localhost:5174"],
+        origin: [env.origin.admin, env.origin.users],
     }),
 );
 // for now we will use sesssion

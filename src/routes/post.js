@@ -4,13 +4,13 @@ import checks from "../middleware/checks.js";
 
 const router = Router();
 
+// users can only get visible posts
 router.get("/", controller.getVisiblePosts);
-router.get("/complete", checks.isLoggedIn, checks.isAdmin, controller.getAll);
+// admins can view, edit, create or delete all posts.
+router.get("/admin/complete", checks.isLoggedIn, checks.isAdmin, controller.getAll);
 router.get("/:id", controller.get);
 router.put("/:id", checks.isLoggedIn, checks.isAdmin, controller.update);
-// anyone can do get but only the admin can do a post
 router.post("/", checks.isLoggedIn, checks.isAdmin, controller.add);
-// router.put("/posts/:id", controller.update);
-// router.delete("/posts/:id", controller.delete);
+router.delete("/:id", checks.isLoggedIn, checks.isAdmin, controller.remove);
 
 export default router;

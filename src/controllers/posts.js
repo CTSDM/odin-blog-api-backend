@@ -15,7 +15,8 @@ async function getVisiblePosts(_, res) {
 
 async function get(req, res) {
     const post = await db.getPost(+req.params.id);
-    if (post) {
+    const user = req.user;
+    if (post && (post.visible === true || user["is_admin"])) {
         normalizeUserInDataArr(post.comments);
         post.username = post.User.username;
         delete post.User;
@@ -43,10 +44,27 @@ async function update(req, res) {
     const postId = +req.body.id;
     const post = await db.getPost(postId);
     if (post) {
-        const data = { visible: !!req.body.visible };
+        const data = {
+            visible: !!req.body.visible,
+            title: req.body.title,
+            content: req.body.content,
+        };
         const updatedPost = await db.updatePost(postId, data);
-        console.log(updatedPost);
-        return res.sendStatus(200);
+        if (updatedPost) {
+            return res.status(200).json({ method: "put" });
+        } else {
+            return res.send(404).json({ message: "There is no post to update" });
+        }
+    } else {
+        return res.sendStatus(404);
+    }
+}
+
+async function remove(req, res) {
+    const postId = +req.body.id;
+    const deletedPost = await db.deletePost(postId);
+    if (deletedPost) {
+        return res.status(200).json({ method: "delete" });
     } else {
         return res.sendStatus(404);
     }
@@ -59,4 +77,4 @@ function normalizeUserInDataArr(dataArr) {
     });
 }
 
-export default { get, getAll, getVisiblePosts, add, update };
+export default { get, getAll, getVisiblePosts, add, update, remove };

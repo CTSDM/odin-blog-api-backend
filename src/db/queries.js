@@ -61,8 +61,8 @@ async function updatePost(id, post) {
             id: id,
         },
         data: {
-            // title: post.title,
-            // content: post.content,
+            title: post.title,
+            content: post.content,
             visible: post.visible,
         },
     });
@@ -126,6 +126,16 @@ async function deleteComment(id) {
     return comment;
 }
 
+async function deletePost(id) {
+    const post = await prisma.post.delete({
+        where: {
+            id: id,
+        },
+    });
+
+    return post;
+}
+
 export default {
     getUser,
     createUser,
@@ -135,6 +145,7 @@ export default {
     createComment,
     deleteComment,
     updatePost,
+    deletePost,
 };
 
 // define all the query functions
