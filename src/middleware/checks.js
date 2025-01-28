@@ -1,3 +1,5 @@
+import db from "../db/queries.js";
+
 function isLoggedIn(req, res, next) {
     if (req.user) {
         next();

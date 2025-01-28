@@ -1,4 +1,5 @@
 import db from "../db/queries.js";
+import validation from "../middleware/validation.js";
 
 function add(req, res) {
     const content = req.body.content;
@@ -12,13 +13,17 @@ function add(req, res) {
     }
 }
 
-async function remove(req, res) {
-    const postDeleted = await db.deleteComment(req.body.id);
-    if (postDeleted) {
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(404);
-    }
-}
+const remove = [
+    validation.getComment,
+    validation.checkErrors,
+    async function (req, res) {
+        const commentDeleted = await db.deleteComment(+req.body.id);
+        if (commentDeleted) {
+            res.sendStatus(200);
+        } else {
+            res.sendStatus(404);
+        }
+    },
+];
 
 export default { add, remove };
