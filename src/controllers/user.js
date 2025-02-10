@@ -1,8 +1,8 @@
 import db from "../db/queries.js";
 import bcrypt from "bcryptjs";
-import passport from "passport";
 import { env } from "../../config/config.js";
 import validation from "../middleware/validation.js";
+import jwt from "../../config/jwt.js";
 
 const add = [
     validation.signup,
@@ -37,34 +37,21 @@ const add = [
 const login = [
     validation.login,
     validation.checkErrors,
-    function login(req, res, next) {
-        passport.authenticate(
-            "local",
-            {
-                failureMessage: true,
-            },
-            (err, user, info) => {
-                if (user) {
-                    req.login(user, () => {
-                        next();
-                    });
-                } else {
-                    return res.status(401).json({ data: "NOT AN APE" });
-                }
-            },
-        )(req, res, next);
+    jwt.createTokens,
+    (_, res) => {
+        res.json({ msg: "you are in" });
     },
 ];
 
-function logout(req, res, next) {
-    if (req.user) {
-        req.logout((err) => {
-            if (err) return next(err);
-            return res.sendStatus(205);
-        });
-    } else {
-        return res.sendStatus(205);
+// Delete the jwt token and the refresh cookie in case they exist
+function logout(req, res) {
+    if (req.cookies["access-token"]) {
+        res.clearCookie("access-token", env.cookieOptions);
     }
+    if (req.cookies["refresh-token"]) {
+        res.clearCookie("refresh-token", env.cookieOptions);
+    }
+    return res.sendStatus(205);
 }
 
 export default { add, login, logout };

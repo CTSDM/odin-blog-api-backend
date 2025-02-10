@@ -16,6 +16,7 @@ model User {
   is_admin Boolean   @default(false)
   comments Comment[]
   posts    Post[]
+  tokens   Token[]
 
   @@map("users")
 }
@@ -43,6 +44,14 @@ model Comment {
   User         User     @relation(fields: [user_id], references: [id])
 
   @@map("comments")
+}
+
+model Token {
+  id      String @id
+  user_id String @db.Uuid
+  User    User   @relation(fields: [user_id], references: [id])
+
+  @@map("tokens")
 }
 
 model Session {

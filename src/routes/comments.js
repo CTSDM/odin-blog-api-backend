@@ -1,10 +1,11 @@
 import { Router } from "express";
 import checks from "../middleware/checks.js";
 import controller from "../controllers/comments.js";
+import jwt from "../../config/jwt.js";
 
 const router = Router();
 
-router.post("/", checks.isLoggedIn, controller.add);
-router.delete("/", checks.isLoggedIn, checks.isAdmin, controller.remove);
+router.post("/", jwt.auth, controller.add);
+router.delete("/", jwt.auth, checks.isAdmin, controller.remove);
 
 export default router;

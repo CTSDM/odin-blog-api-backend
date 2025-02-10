@@ -136,16 +136,36 @@ async function deletePost(id) {
     return post;
 }
 
+async function createToken(tokenString, userId) {
+    const token = await prisma.token.create({ data: { id: tokenString, user_id: userId } });
+    return token;
+}
+
+async function getToken(tokenString) {
+    const token = await prisma.token.findUnique({
+        where: {
+            id: tokenString,
+        },
+    });
+    return token;
+}
+
+async function deleteToken(tokenString) {
+    const token = await prisma.token.delete({ where: { id: tokenString } });
+    return token;
+}
+
 export default {
     getUser,
     createUser,
     createPost,
+    createToken,
     getAllPosts,
     getPost,
+    getToken,
     createComment,
     deleteComment,
     updatePost,
     deletePost,
+    deleteToken,
 };
-
-// define all the query functions
