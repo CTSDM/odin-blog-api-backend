@@ -4,6 +4,8 @@ dotenv.config();
 const env = {
     port: process.env.PORT,
     secretSession: process.env.SECRET_SESSION,
+    keyAccessToken: process.env.SECRET_ACCESS_TOKEN,
+    keyRefreshToken: process.env.SECRET_REFRESH_TOKEN,
     adminCode: process.env.PASSWORD_CREATE_NEW_ADMIN,
     origin: {
         admin: process.env.ORIGIN_ADMIN,
@@ -27,6 +29,7 @@ const env = {
             },
         },
     },
+    cookieOptions: { httpOnly: true, secure: false },
 };
 
 export { env };

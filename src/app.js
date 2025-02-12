@@ -1,10 +1,9 @@
 import express from "express";
-import session from "express-session";
 import passport from "passport";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import { env } from "../config/config.js";
-import sessionOptions from "../config/session.js";
 import routePosts from "./routes/post.js";
 import routeSignup from "./routes/signup.js";
 import routeLogin from "./routes/login.js";
@@ -15,7 +14,7 @@ import "../config/passport.js";
 
 const app = express();
 
-app.use(session(sessionOptions));
+app.use(cookieParser());
 // enable all cors
 app.use(
     cors({
@@ -25,7 +24,8 @@ app.use(
     }),
 );
 // for now we will use sesssion
-app.use(passport.session());
+// app.use(passport.initi())
+app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
