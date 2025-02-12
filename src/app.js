@@ -23,8 +23,7 @@ app.use(
         origin: [env.origin.admin, env.origin.users],
     }),
 );
-// for now we will use sesssion
-// app.use(passport.initi())
+
 app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

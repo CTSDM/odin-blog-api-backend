@@ -2,14 +2,13 @@ import { Router } from "express";
 import controller from "../controllers/user.js";
 import checks from "../middleware/checks.js";
 import jwt from "../../config/jwt.js";
+import { sendUserToClient } from "../utils/utils.js";
 
 const router = Router();
 
-router.get("/", jwt.auth, (req, res) =>
-    res.status(200).json({ username: req.user.username, data: "logged in" }),
-);
-router.post("/", controller.login);
-router.get("/admin", jwt.auth, checks.isAdmin, (_, res) => res.sendStatus(200));
-router.post("/admin", jwt.auth, checks.isAdmin, (_, res) => res.sendStatus(200));
+router.get("/", jwt.auth, sendUserToClient);
+router.post("/", controller.login, sendUserToClient);
+router.get("/admin", jwt.auth, checks.isAdmin, sendUserToClient);
+router.post("/admin", controller.loginAdmin, sendUserToClient);
 
 export default router;

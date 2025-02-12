@@ -1,4 +1,6 @@
+import jwt from "../../config/jwt.js";
 import db from "../db/queries.js";
+import checks from "../middleware/checks.js";
 import validation from "../middleware/validation.js";
 
 async function getAll(_, res) {
@@ -14,17 +16,23 @@ async function getVisiblePosts(_, res) {
     return res.status(200).json(postsVisible);
 }
 
+// this route is accessible by both users and admins
+// if the post is visible both users and admins will get the post data
+// if the post is not visible, only an authenticated admin can get the post
 const get = [
     validation.getPost,
     validation.checkErrors,
-    async function (req, res) {
+    async function (req, res, next) {
         const post = await db.getPost(+req.params.id);
-        const user = req.user;
-        if (post && (post.visible === true || user["is_admin"])) {
+        if (post) {
             normalizeUserInDataArr(post.comments);
             post.username = post.User.username;
-            delete post.User;
-            return res.status(200).json(post);
+            req.payload = post;
+            if (post.visible) {
+                return res.status(200).json(req.payload);
+            } else {
+                next();
+            }
         } else {
             return res.sendStatus(404);
         }

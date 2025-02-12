@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { env } from "../../config/config.js";
 import validation from "../middleware/validation.js";
 import jwt from "../../config/jwt.js";
+import checks from "../middleware/checks.js";
 
 const add = [
     validation.signup,
@@ -34,13 +35,14 @@ const add = [
     },
 ];
 
-const login = [
+const login = [validation.login, validation.checkErrors, checks.isUser, jwt.createTokens];
+
+const loginAdmin = [
     validation.login,
     validation.checkErrors,
+    checks.isUser,
+    checks.isAdmin,
     jwt.createTokens,
-    (_, res) => {
-        res.json({ msg: "you are in" });
-    },
 ];
 
 // Delete the jwt token and the refresh cookie in case they exist
@@ -54,4 +56,4 @@ function logout(req, res) {
     return res.sendStatus(205);
 }
 
-export default { add, login, logout };
+export default { add, login, loginAdmin, logout };
