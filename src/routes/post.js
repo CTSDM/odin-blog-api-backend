@@ -9,7 +9,10 @@ const router = Router();
 router.get("/", controller.getVisiblePosts);
 // admins can view, edit, create or delete all posts.
 router.get("/admin/complete", jwt.auth, checks.isAdmin, controller.getAll);
-router.get("/:id", controller.get);
+// if the post is visible is returned without auth the user
+router.get("/:id", controller.get, jwt.auth, checks.isAdmin, (req, res) =>
+    res.status(200).json(req.payload),
+);
 router.put("/:id", jwt.auth, checks.isAdmin, controller.update);
 router.post("/", jwt.auth, checks.isAdmin, controller.add);
 router.delete("/:id", jwt.auth, checks.isAdmin, controller.remove);

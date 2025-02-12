@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { env } from "../config/config.js";
 import db from "../src/db/queries.js";
 import passport from "passport";
-import { checkUsernamePassword } from "../src/utils/utils.js";
 
 const auth = (req, res, next) => {
     passport.authenticate(
@@ -66,7 +65,11 @@ async function checkRefreshToken(req) {
 async function createRefreshToken(req, res) {
     const expiration = 60 * 60 * 24 * 180; // 180 days
     const token = signToken(req, env.keyRefreshToken, { expiresIn: expiration });
-    await db.createToken(token, req.user.id);
+    try {
+        await db.createToken(token, req.user.id);
+    } catch (err) {
+        console.log(err);
+    }
     return res.cookie("refresh-token", token, env.cookieOptions);
 }
 
@@ -84,16 +87,9 @@ function signToken(req, key, options) {
 }
 
 async function createTokens(req, res, next) {
-    const userCredentials = { username: req.body.username, password: req.body.password };
-    const user = await checkUsernamePassword(userCredentials);
-    if (user) {
-        req.user = { ...user, password: undefined };
-        await createRefreshToken(req, res);
-        createAccessToken(req, res);
-        next();
-    } else {
-        return res.status(401).json({ msg: "unauthorized, you not ape" });
-    }
+    await createRefreshToken(req, res);
+    createAccessToken(req, res);
+    next();
 }
 
 export default { auth, createTokens };

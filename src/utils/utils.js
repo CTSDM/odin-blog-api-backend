@@ -13,8 +13,14 @@ async function checkUsernamePassword(userCredentials) {
         }
         return user;
     } catch (err) {
-        throw new Error(err);
+        console.log(err);
+        return res.status(500);
     }
 }
 
-export { checkUsernamePassword };
+function sendUserToClient(req, res) {
+    req.userDataToClient = { username: req.user.username, is_admin: req.user["is_admin"] };
+    res.status(200).json({ ...req.userDataToClient, data: "logged in" });
+}
+
+export { checkUsernamePassword, sendUserToClient };
