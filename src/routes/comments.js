@@ -6,6 +6,6 @@ import jwt from "../../config/jwt.js";
 const router = Router();
 
 router.post("/", jwt.auth, controller.add);
-router.delete("/", jwt.auth, checks.isAdmin, controller.remove);
+router.delete("/", jwt.auth, controller.remove);
 
 export default router;

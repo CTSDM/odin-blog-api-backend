@@ -51,6 +51,9 @@ async function getAllPosts() {
                 },
             },
         },
+        orderBy: {
+            id: "desc",
+        },
     });
     return posts;
 }
@@ -96,6 +99,9 @@ async function getPost(id) {
                             username: true,
                         },
                     },
+                },
+                orderBy: {
+                    created_time: "asc",
                 },
             },
         },
@@ -150,6 +156,16 @@ async function getToken(tokenString) {
     return token;
 }
 
+async function getComment(id) {
+    const comment = await prisma.comment.findUnique({
+        where: {
+            id: id,
+        },
+    });
+
+    return comment;
+}
+
 async function deleteToken(tokenString) {
     const token = await prisma.token.delete({ where: { id: tokenString } });
     return token;
@@ -157,6 +173,7 @@ async function deleteToken(tokenString) {
 
 export default {
     getUser,
+    getComment,
     createUser,
     createPost,
     createToken,

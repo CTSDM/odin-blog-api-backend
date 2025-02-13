@@ -19,7 +19,11 @@ async function checkUsernamePassword(userCredentials) {
 }
 
 function sendUserToClient(req, res) {
-    req.userDataToClient = { username: req.user.username, is_admin: req.user["is_admin"] };
+    req.userDataToClient = {
+        username: req.user.username,
+        is_admin: req.user["is_admin"],
+        id: req.user.id,
+    };
     res.status(200).json({ ...req.userDataToClient, data: "logged in" });
 }
 

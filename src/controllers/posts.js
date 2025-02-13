@@ -40,7 +40,6 @@ const get = [
 ];
 
 const add = [
-    validation.getPost,
     validation.dataPost,
     validation.checkErrors,
     async (req, res) => {
