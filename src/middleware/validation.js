@@ -53,7 +53,7 @@ function checkUsernameExists(id) {
     return id
         .custom(async (value) => {
             const username = value;
-            const userDB = await db.getUser("username", username);
+            const userDB = await db.getUser("username_lowercase", username.toLowerCase());
             if (userDB) {
                 // we need to return a promise because we are using an async function!
                 return Promise.reject();

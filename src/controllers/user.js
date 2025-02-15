@@ -17,21 +17,15 @@ const add = [
         if (adminCode && adminCode !== env.adminCode) return res.sendStatus(401);
         newUser.admin = !!adminCode;
 
-        // we should add verification along the way...
-        const username = await db.getUser("username", req.body.username);
-        if (username === null) {
-            newUser.username = req.body.username;
-            newUser.pw = await bcrypt.hash(req.body.password, 10);
-            const userDB = await db.createUser(newUser);
-            if (!userDB) {
-                return res.sendStatus(400);
-            }
-            const response = { username: newUser.username };
-            if (newUser.admin) response.admin = true;
-            return res.json(response);
-        } else {
+        newUser.username = req.body.username;
+        newUser.pw = await bcrypt.hash(req.body.password, 10);
+        const userDB = await db.createUser(newUser);
+        if (!userDB) {
             return res.sendStatus(400);
         }
+        const response = { username: newUser.username };
+        if (newUser.admin) response.admin = true;
+        return res.json(response);
     },
 ];
 

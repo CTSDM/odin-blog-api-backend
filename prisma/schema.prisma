@@ -10,14 +10,15 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username String    @unique
-  password String
-  is_admin Boolean   @default(false)
-  comments Comment[]
-  posts    Post[]
-  likes    Like[]
-  tokens   Token[]
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username           String    @unique
+  username_lowercase String    @unique
+  password           String
+  is_admin           Boolean   @default(false)
+  comments           Comment[]
+  posts              Post[]
+  likes              Like[]
+  tokens             Token[]
 
   @@map("users")
 }
@@ -49,10 +50,10 @@ model Comment {
 }
 
 model Like {
-  user_id  String @db.Uuid
-  post_id  Int
-  Post     Post   @relation(fields: [post_id], references: [id], onDelete: Cascade)
-  User     User   @relation(fields: [user_id], references: [id])
+  user_id String @db.Uuid
+  post_id Int
+  Post    Post   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  User    User   @relation(fields: [user_id], references: [id])
 
   @@id([post_id, user_id])
   @@map("likes")
