@@ -71,6 +71,10 @@ function checkBoolean(id, type) {
     return id.isBoolean().withMessage(`The ${type} should be a boolean`);
 }
 
+function checkIsNumeric(id, type) {
+    return id.trim().isNumeric().withMessage(`The ${type} must be a number`);
+}
+
 const signup = [
     checkUsernameExists(body("username")),
     checkAlphaNumerical(body("username"), "username"),
@@ -111,8 +115,13 @@ const dataPost = [
     checkBoolean(body("visible"), "visible variable"),
 ];
 
-const getPost = [param("id").trim().isNumeric().withMessage("The post id must be a number")];
-const getComment = [body("id").trim().isNumeric().withMessage("The post id must be a number")];
+const comment = [
+    checkNotEmpty(body("content"), "content"),
+    checkIsNumeric(body("postId"), "post id"),
+];
 
-const validation = { signup, login, dataPost, getPost, getComment, checkErrors };
+const getPost = [checkIsNumeric(param("id"), "post id")];
+const getComment = [checkIsNumeric(body("id"), "comment id")];
+
+const validation = { signup, login, comment, dataPost, getPost, getComment, checkErrors };
 export default validation;

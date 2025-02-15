@@ -30,6 +30,11 @@ const env = {
         },
     },
     cookieOptions: { httpOnly: true, secure: false },
+    dbMessages: {
+        delete: {
+            notFound: "Record to delete does not exist.",
+        },
+    },
 };
 
 export { env };

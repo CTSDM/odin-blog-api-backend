@@ -33,6 +33,6 @@ app.use("/login", routeLogin);
 app.use("/logout", routeLogout);
 app.use("/posts", routePosts);
 app.use("/comments", routeComments);
-app.use((_, res) => res.sendStatus(404));
+app.use((_, res) => res.status(404).json({ msg: "end of file" }));
 
 app.listen(env.port, () => console.log(`Listening on port ${env.port}`));

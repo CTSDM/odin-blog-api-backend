@@ -1,6 +1,4 @@
-import jwt from "../../config/jwt.js";
 import db from "../db/queries.js";
-import checks from "../middleware/checks.js";
 import validation from "../middleware/validation.js";
 
 async function getAll(_, res) {
@@ -26,7 +24,10 @@ const get = [
         const post = await db.getPost(+req.params.id);
         if (post) {
             normalizeUserInDataArr(post.comments);
+            normalizeUserInDataArr(post.likes);
+            post.likes = getTransformUserArrObjIntoArr(post.likes);
             post.username = post.User.username;
+            delete post.User;
             req.payload = post;
             if (post.visible) {
                 return res.status(200).json(req.payload);
@@ -89,6 +90,41 @@ async function remove(req, res) {
     }
 }
 
+const like = [
+    validation.getPost,
+    validation.checkErrors,
+    async (req, res) => {
+        const userId = req.user.id;
+        const postId = +req.params.id;
+        try {
+            await db.createLike(userId, postId);
+        } catch (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        return res.sendStatus(200);
+    },
+];
+const unlike = [
+    validation.getPost,
+    validation.checkErrors,
+    async (req, res) => {
+        const userId = req.user.id;
+        const postId = +req.params.id;
+        try {
+            // this function returns a count of how many entries were deleted
+            const deleted = await db.deleteLike(userId, postId);
+            if (deleted.count === 0) {
+                return res.sendStatus(404);
+            }
+            return res.sendStatus(200);
+        } catch (err) {
+            console.log(err);
+            return res.status(500);
+        }
+    },
+];
+
 function normalizeUserInDataArr(dataArr) {
     dataArr.forEach((data) => {
         data.username = data.User.username;
@@ -96,4 +132,10 @@ function normalizeUserInDataArr(dataArr) {
     });
 }
 
-export default { get, getAll, getVisiblePosts, add, update, remove };
+function getTransformUserArrObjIntoArr(arrObj) {
+    const arr = [];
+    arrObj.forEach((obj) => arr.push(obj.username));
+    return arr;
+}
+
+export default { get, getAll, like, unlike, getVisiblePosts, add, update, remove };

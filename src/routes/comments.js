@@ -1,5 +1,4 @@
 import { Router } from "express";
-import checks from "../middleware/checks.js";
 import controller from "../controllers/comments.js";
 import jwt from "../../config/jwt.js";
 

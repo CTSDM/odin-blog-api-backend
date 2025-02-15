@@ -73,6 +73,35 @@ async function updatePost(id, post) {
     return newPost;
 }
 
+async function getLikesCount(postId) {
+    const likeCount = await prisma.like.count({
+        where: {
+            post_id: postId,
+        },
+    });
+    return likeCount;
+}
+
+async function createLike(userId, postId) {
+    const like = await prisma.like.create({
+        data: {
+            user_id: userId,
+            post_id: postId,
+        },
+    });
+    return like;
+}
+
+async function deleteLike(userId, postId) {
+    const like = await prisma.like.deleteMany({
+        where: {
+            user_id: userId,
+            post_id: postId,
+        },
+    });
+    return like;
+}
+
 async function getPost(id) {
     const post = await prisma.post.findUnique({
         where: {
@@ -87,6 +116,15 @@ async function getPost(id) {
             User: {
                 select: {
                     username: true,
+                },
+            },
+            likes: {
+                select: {
+                    User: {
+                        select: {
+                            username: true,
+                        },
+                    },
                 },
             },
             comments: {
@@ -174,6 +212,8 @@ async function deleteToken(tokenString) {
 export default {
     getUser,
     getComment,
+    getLikesCount,
+    createLike,
     createUser,
     createPost,
     createToken,
@@ -185,4 +225,5 @@ export default {
     updatePost,
     deletePost,
     deleteToken,
+    deleteLike,
 };

@@ -51,7 +51,7 @@ async function checkRefreshToken(req) {
         try {
             await db.deleteToken(token);
         } catch (err) {
-            if (err.meta && err.meta.cause !== "Record to delete does not exist.") {
+            if (err.meta && err.meta.cause !== env.dbMessages.delete.notFound) {
                 console.log(err);
             }
         } finally {

@@ -17,4 +17,6 @@ router.put("/:id", jwt.auth, checks.isAdmin, controller.update);
 router.post("/", jwt.auth, checks.isAdmin, controller.add);
 router.delete("/:id", jwt.auth, checks.isAdmin, controller.remove);
 
+router.post("/:id/like", jwt.auth, controller.like);
+router.delete("/:id/like", jwt.auth, controller.unlike);
 export default router;
