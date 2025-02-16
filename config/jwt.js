@@ -45,7 +45,12 @@ async function checkRefreshToken(req) {
     }
     try {
         const payload = jwt.verify(token, env.keyRefreshToken);
-        req.user = { username: payload.username, is_admin: payload["is_admin"], id: payload.id };
+        req.user = {
+            username: payload.username,
+            is_admin: payload["is_admin"],
+            id: payload.id,
+            profile_src: payload["profile_src"],
+        };
         return true;
     } catch (err) {
         try {
@@ -86,6 +91,7 @@ function signToken(req, key, options) {
         username: req.user.username,
         is_admin: req.user["is_admin"],
         id: req.user.id,
+        profile_src: req.user["profile_src"],
     };
     return jwt.sign(payload, key, options);
 }

@@ -23,7 +23,7 @@ const get = [
     async function (req, res, next) {
         const post = await db.getPost(+req.params.id);
         if (post) {
-            normalizeUserInDataArr(post.comments);
+            normalizeComments(post.comments);
             normalizeUserInDataArr(post.likes);
             post.likes = getTransformUserArrObjIntoArr(post.likes);
             post.username = post.User.username;
@@ -128,6 +128,14 @@ const unlike = [
 function normalizeUserInDataArr(dataArr) {
     dataArr.forEach((data) => {
         data.username = data.User.username;
+        delete data.User;
+    });
+}
+
+function normalizeComments(dataArr) {
+    dataArr.forEach((data) => {
+        data.username = data.User.username;
+        data.profileSrc = data.User["profile_src"];
         delete data.User;
     });
 }

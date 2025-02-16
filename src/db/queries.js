@@ -19,6 +19,7 @@ async function createUser(user) {
             username_lowercase: user.username.toLowerCase(),
             password: user.pw,
             is_admin: user.admin,
+            profile_src: user.profileSrc,
         },
     });
 
@@ -136,6 +137,7 @@ async function getPost(id) {
                     User: {
                         select: {
                             username: true,
+                            profile_src: true,
                         },
                     },
                 },

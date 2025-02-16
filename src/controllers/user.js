@@ -4,6 +4,7 @@ import { env } from "../../config/config.js";
 import validation from "../middleware/validation.js";
 import jwt from "../../config/jwt.js";
 import checks from "../middleware/checks.js";
+import { getRandomProfile } from "../utils/utils.js";
 
 const add = [
     validation.signup,
@@ -16,9 +17,10 @@ const add = [
         let adminCode = req.body.adminCode;
         if (adminCode && adminCode !== env.adminCode) return res.sendStatus(401);
         newUser.admin = !!adminCode;
-
         newUser.username = req.body.username;
         newUser.pw = await bcrypt.hash(req.body.password, 10);
+        // The admin will have a special profile logo
+        newUser.profileSrc = newUser.admin ? env.profiles.admin : await getRandomProfile();
         const userDB = await db.createUser(newUser);
         if (!userDB) {
             return res.sendStatus(400);
