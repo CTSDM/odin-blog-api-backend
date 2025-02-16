@@ -3,7 +3,7 @@ import db from "../db/queries.js";
 import cloudinary from "../../config/cloudinary.js";
 import { env } from "../../config/config.js";
 
-async function checkUsernamePassword(userCredentials) {
+async function checkUsernamePassword(userCredentials, res) {
     try {
         const user = await db.getUser("username", userCredentials.username);
         if (!user) {
@@ -15,7 +15,6 @@ async function checkUsernamePassword(userCredentials) {
         }
         return user;
     } catch (err) {
-        console.log(err);
         return res.status(500);
     }
 }

@@ -7,10 +7,7 @@ const env = {
     keyAccessToken: process.env.SECRET_ACCESS_TOKEN,
     keyRefreshToken: process.env.SECRET_REFRESH_TOKEN,
     adminCode: process.env.PASSWORD_CREATE_NEW_ADMIN,
-    origin: {
-        admin: process.env.ORIGIN_ADMIN,
-        users: process.env.ORIGIN_USERS,
-    },
+    whitelist: process.env.ALLOWED_ORIGINS,
     validation: {
         users: {
             username: {

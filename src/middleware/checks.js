@@ -10,7 +10,7 @@ function isAdmin(req, res, next) {
 
 async function isUser(req, res, next) {
     const userCredentials = { username: req.body.username, password: req.body.password };
-    const user = await checkUsernamePassword(userCredentials);
+    const user = await checkUsernamePassword(userCredentials, res);
     if (user) {
         req.user = { ...user, password: "_" };
         next();
