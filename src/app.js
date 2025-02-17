@@ -3,7 +3,7 @@ import passport from "passport";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import { env } from "../config/config.js";
+import { env, corsConfig } from "../config/config.js";
 import routePosts from "./routes/post.js";
 import routeSignup from "./routes/signup.js";
 import routeLogin from "./routes/login.js";
@@ -15,21 +15,7 @@ import "../config/passport.js";
 const app = express();
 
 app.use(cookieParser());
-// enable all cors
-app.use(
-    cors({
-        exposedHeaders: ["SET-COOKIES"],
-        credentials: true,
-        origin: (origin, cb) => {
-            const allowedOrigins = process.env.ALLOWED_ORIGINS.split(" ");
-            if (allowedOrigins.indexOf(origin) !== -1) {
-                cb(null, true);
-            } else {
-                cb(new Error(`Request from unauthorized origin ${origin}`));
-            }
-        },
-    }),
-);
+app.use(cors(corsConfig));
 
 app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
