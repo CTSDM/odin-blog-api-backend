@@ -75,7 +75,7 @@ async function createRefreshToken(req, res) {
     } catch (err) {
         console.log(err);
     }
-    return res.cookie("refresh-token", token, env.cookieOptions);
+    return res.cookie("refresh-token", token, { ...env.cookie.options, maxAge: env.cookie.maxAge });
 }
 
 // we sign the token after we verify that the use is in fact in our database
@@ -83,7 +83,7 @@ async function createRefreshToken(req, res) {
 function createAccessToken(req, res) {
     const expiration = 60 * 3; // 3 minutes
     const token = signToken(req, env.keyAccessToken, { expiresIn: expiration });
-    return res.cookie("access-token", token, env.cookieOptions);
+    return res.cookie("access-token", token, { ...env.cookie.options, maxAge: env.cookie.maxAge });
 }
 
 function signToken(req, key, options) {

@@ -42,7 +42,7 @@ async function getRandomProfile() {
             }
         },
     );
-    const arrLinks = response.resources.map((obj) => obj.url);
+    const arrLinks = response.resources.map((obj) => obj.secure_url);
     return arrLinks[Math.floor(Math.random() * arrLinks.length)];
 }
 

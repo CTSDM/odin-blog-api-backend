@@ -44,10 +44,10 @@ const loginAdmin = [
 // Delete the jwt token and the refresh cookie in case they exist
 function logout(req, res) {
     if (req.cookies["access-token"]) {
-        res.clearCookie("access-token", env.cookieOptions);
+        res.clearCookie("access-token", env.cookie.options);
     }
     if (req.cookies["refresh-token"]) {
-        res.clearCookie("refresh-token", env.cookieOptions);
+        res.clearCookie("refresh-token", env.cookie.options);
     }
     return res.sendStatus(205);
 }

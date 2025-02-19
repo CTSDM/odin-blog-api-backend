@@ -24,7 +24,6 @@ const env = {
             },
         },
     },
-    cookieOptions: { httpOnly: true, secure: false },
     dbMessages: {
         delete: {
             notFound: "Record to delete does not exist.",
@@ -42,6 +41,17 @@ const env = {
     },
     allowedOrigins: process.env.ALLOWED_ORIGINS,
     delimiter: process.env.DELIMITER,
+    devStatus: process.env.DEV_STATUS === "1" ? true : false,
+};
+
+// 190 days for the cookie to expire
+env.cookie = {
+    options: {
+        httpOnly: true,
+        secure: env.devStatus ? false : true,
+        sameSite: "none",
+    },
+    maxAge: 1000 * 60 * 60 * 24 * 190,
 };
 
 const corsConfig = {
